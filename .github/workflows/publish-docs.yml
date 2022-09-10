@@ -1,0 +1,31 @@
+# This workflow will build a Java project with Maven
+
+name: Publish documentation to the project page
+
+on:
+  push:
+    branches: [ main, release ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v1
+        with:
+          path: docs
+
+  # Deployment job  (see https://github.com/actions/deploy-pages)
+  deploy:
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v1
